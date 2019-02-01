@@ -1,0 +1,103 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2018-05-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "new_ResourceGroup": {
+            "type": "string",
+            "allowedValues": [
+                "Yes",
+                "No"
+            ]
+        },
+        "nsgCount": {
+            "value": 2
+        },
+        "nicCount": {
+            "value": 2
+        },
+        "storageCount": {
+            "value": 2
+        },
+        "vmCount": {
+            "value": 2
+        },
+        "ResourceGroupLocation": {
+            "value": "WestUS2"
+        },
+        "shortLocation": {
+            "value": "WU2"
+        },
+        "Application_Acronym": {
+            "value": "EMS"
+        },
+        "Tier_Name": {
+            "value": "TR"
+        },
+        "Environment_Category": {
+            "value": "DEV"
+        },
+        "Role": {
+            "value": "WEB"
+        },
+        "Tenant": {
+            "value": "SRD"
+        },
+        "Custom": {
+            "value": "EFOQA"
+        },
+        "virtualNetworkResourceGroup": {
+            "value": "emsSharedSpace"
+        },
+        "virtualNetworkName": {
+            "value": "emsvnet"
+        },
+        "subnet1Name": {
+            "value": "emsManager"
+        },
+        "AvailabilitySet": {
+            "value": "Yes"
+        },
+        "privateIpAddress": {
+            "value": [
+                "10.4.0.5",
+                "10.4.0.6"
+            ]
+        },
+        "virtualMachineSize": {
+            "value": "Standard_DS4_v2"
+        },
+        "numberOfDataDisks": {
+            "value": 2
+        },
+        "DataDiskSize": {
+            "value": 1024
+        },
+        "omsWorkspaceResourceGroup": {
+            "value": "emsSharedSpace"
+        },
+        "omsWorkspaceName": {
+            "value": "emsOMS"
+        },
+        "keyVaultResourceGroupName": {
+            "value": "emsSharedSpace"
+        },
+        "keyvaultName": {
+            "value": "emskeyvault01"
+        },
+        "adminUsername": {
+            "value": "azAdministrator"
+        },
+        "domainName": {
+            "value": "drefoqa.com"
+        },
+        "DomainUserName": {
+            "value": "azAdministrator"
+        },
+        "secret_DomainPassword": {
+            "value": "admin"
+        },
+        "baseUri": {
+            "value": "https://raw.githubusercontent.com/hanuravim"
+        }
+    }
+}
