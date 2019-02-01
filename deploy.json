@@ -2,97 +2,88 @@
     "$schema": "https://schema.management.azure.com/schemas/2018-05-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "ResourceGroupCount": {
-            "type": "int",
-            "defaultvalue": 1
+        "new_ResourceGroup": {
+            "type": "string",
+            "allowedValues": [
+                "Yes",
+                "No"
+            ]
         },
         "nsgCount": {
             "type": "int",
-            "defaultvalue": 1
+            "maxValue": 1
         },
         "nicCount": {
             "type": "int",
-            "defaultvalue": 2
+            "maxValue": 1
         },
         "storageCount": {
-            "type": "int",
-            "defaultvalue": 1
+            "type": "int"
         },
         "vmCount": {
             "type": "int",
-            "defaultvalue": 2
+            "maxValue": 1
         },
         "ResourceGroupLocation": {
-            "type": "string",
-            "defaultValue": "CentralUS"
+            "type": "string"
         },
         "shortLocation": {
             "type": "string",
             "maxLength": 3,
             "metadata": {
                 "description": "3 chars. E.g. East US - EU, West US - WU, East US 2 - EU2"
-            },
-            "defaultValue": "cu"
+            }
         },
         "Application_Acronym": {
             "type": "string",
             "maxLength": 3,
             "metadata": {
                 "description": "3 chars e.g. nxt (Next Net), ems"
-            },
-            "defaultValue": "EMS"
+            }
         },
         "Tier_Name": {
             "type": "string",
             "maxLength": 2,
             "metadata": {
                 "description": "2 chars E.g. Sanbox (SB), Live (LI) and training (TR)"
-            },
-            "defaultValue": "SB"
+            }
         },
         "Environment_Category": {
             "type": "string",
             "maxLength": 3,
             "metadata": {
                 "description": "3 char. E.g.  DEV, QA, UAT and PRD"
-            },
-            "defaultValue": "DEV"
+            }
         },
         "Role": {
             "type": "string",
             "maxLength": 3,
             "metadata": {
                 "description": "3 chars e.g. Front end (WEB), Storage (STR), Messaging (MSG), Network (NET), General (GEN) etc."
-            },
-            "defaultValue": "EMS"
+            }
         },
         "Tenant": {
             "type": "string",
             "maxLength": 3,
             "metadata": {
                 "description": "3 chars  Shared (SRD), Tenant Acronym)"
-            },
-            "defaultValue": "SRD"
+            }
         },
         "Custom": {
             "type": "string",
             "maxLength": 8,
             "metadata": {
                 "description": "(Product Specific) Space. 8 chars (OPTIONAL)"
-            },
-            "defaultValue": "EFOQA"
+            }
         },
         "virtualNetworkResourceGroup": {
-            "type": "string",
-            "defaultvalue": "fa-dr-poc"
+            "type": "string"
         },
         "virtualNetworkName": {
-            "type": "string",
-            "defaultvalue": "DREFOQAPOC"
+            "type": "string"
         },
         "subnet1Name": {
-            "type": "string",
-            "defaultvalue": "default"
+            "type": "string"
         },
         "AvailabilitySet": {
             "type": "string",
@@ -106,96 +97,89 @@
             }
         },
         "privateIpAddress": {
-            "type": "array",
-            "defaultvalue": [
-                "10.5.0.31",
-                "10.5.0.32"
-            ]
+            "type": "array"
         },
         "virtualMachineSize": {
-            "type": "string",
-            "defaultvalue": "Standard_DS4_v2"
+            "type": "string"
         },
         "numberOfDataDisks": {
-            "type": "int",
-            "defaultvalue": 1
+            "type": "int"
         },
         "DataDiskSize": {
-            "type": "int",
-            "defaultvalue": 1
+            "type": "int"
         },
         "omsWorkspaceResourceGroup": {
-            "type": "string",
-            "defaultvalue": "fa-dr-poc"
+            "type": "string"
         },
         "omsWorkspaceName": {
-            "type": "string",
-            "defaultvalue": "fa-log-analytics"
+            "type": "string"
+        },
+        "keyVaultResourceGroupName": {
+            "type": "string"
+        },
+        "keyvaultName": {
+            "type": "sring"
         },
         "adminUsername": {
-            "type": "string",
-            "defaultvalue": ""
-        },
-        "adminPassword": {
-            "type": "securestring",
-            "defaultvalue": ""
+            "type": "string"
         },
         "domainName": {
-            "type": "string",
-            "defaultvalue": "drefoqa.com"
+            "type": "string"
         },
         "DomainUserName": {
-            "type": "string",
-            "defaultvalue": ""
+            "type": "string"
         },
-        "DomainPassword": {
-            "type": "securestring",
-            "defaultvalue": ""
+        "secret_DomainPassword": {
+            "type": "securestring"
         },
         "baseUri": {
-            "type": "string",
-            "defaultValue": "https://raw.githubusercontent.com/hanuravim/demo-ems/master"
+            "type": "string"
         }
     },
     "variables": {
         "CharactersForvmName": 2,
         "StorageAccountType": "Standard_LRS",
-        "availabilitySetName": "[tolower(concat(parameters('Application_Acronym'),'-avset'))]",
-        "ResourceGroupName": "[toupper(concat('GAV-',parameters('shortLocation'),'-',parameters('Application_Acronym'),'-',parameters('Tier_Name'),'-',parameters('Environment_Category'),'-',parameters('Role'),'-',parameters('Tenant'),'-','01','-',parameters('Custom')))]",
-        "StorageAccountName": "[tolower(concat(parameters('Application_Acronym'),parameters('shortlocation'),parameters('Tier_Name'),parameters('Environment_Category'),'emsstr','00'))]",
         "vnetID": "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',parameters('virtualNetworkResourceGroup'),'/providers/Microsoft.Network/virtualNetworks/',parameters('virtualNetworkName'))]",
         "subnet1Ref": "[concat(variables('vnetID'),'/subnets/', parameters('subnet1Name'))]",
-        "networkInterfaceName": "[tolower(concat('GAV',parameters('shortLocation'),'-',parameters('Application_Acronym'),'-',parameters('Environment_Category'),'-','nic','-',parameters('Custom'),'-','00'))]",
-        "networkSecurityGroupName": "[tolower(concat('GAV',parameters('shortLocation'),'-',parameters('Application_Acronym'),'-',parameters('Environment_Category'),'-','nsg','-',parameters('Custom'),'-','00'))]",
-        "virtualmachineName": "[tolower(concat(take(parameters('Application_Acronym'),variables('CharactersForvmName')),first(parameters('Environment_Category')),first(parameters('Role')),parameters('Custom'),'00'))]",
-        "osDiskName": "[tolower(concat('gav',parameters('shortLocation'),'-',parameters('Application_Acronym'),'-','dr','-','osd','-','dsk','-',parameters('Role'),'00'))]",
-        "dataDiskName": "[tolower(concat('gav',parameters('shortLocation'),'-',parameters('Application_Acronym'),'-','dr','-','dat','-','dsk','-',parameters('Role'),'00'))]",
-        "nsgTemplateURL": "[concat(parameters('baseUri'),'/ems-manager/nestedTemplates/networkSecurityGroup.json')]",
-        "StorageAccountTemplate": "[concat(parameters('baseUri'),'/ems-manager/nestedTemplates/StorageAccount.json')]",
-        "virtualMachineTemplate": "[concat(parameters('baseUri'),'/ems-manager/nestedTemplates/emsVM.json')]",
-        "domainJoinTemplate": "[concat(parameters('baseUri'),'/ems-manager/nestedTemplates/domainJoin.json')]",
-        "omsAgentTemplate": "[concat(parameters('baseUri'),'/ems-manager/nestedTemplates/omsAgent.json')]"
+        "resourceNames": {
+            "availabilitySetName": "[tolower(concat(parameters('Application_Acronym'),'-avset'))]",
+            "ResourceGroupName": "[toupper(concat('GAV-',parameters('shortLocation'),'-',parameters('Application_Acronym'),'-',parameters('Tier_Name'),'-',parameters('Environment_Category'),'-',parameters('Role'),'-',parameters('Tenant'),'-','01','-',parameters('Custom')))]",
+            "StorageAccountName": "[tolower(concat(parameters('Application_Acronym'),parameters('shortlocation'),parameters('Tier_Name'),parameters('Environment_Category'),'emsstr','00'))]",
+            "networkInterfaceName": "[tolower(concat('GAV',parameters('shortLocation'),'-',parameters('Application_Acronym'),'-',parameters('Environment_Category'),'-','nic','-',parameters('Custom'),'-','00'))]",
+            "networkSecurityGroupName": "[tolower(concat('GAV',parameters('shortLocation'),'-',parameters('Application_Acronym'),'-',parameters('Environment_Category'),'-','nsg','-',parameters('Custom'),'-','00'))]",
+            "virtualmachineName": "[tolower(concat(take(parameters('Application_Acronym'),variables('CharactersForvmName')),first(parameters('Environment_Category')),first(parameters('Role')),parameters('Custom'),'00'))]",
+            "osDiskName": "[tolower(concat('gav',parameters('shortLocation'),'-',parameters('Application_Acronym'),'-','dr','-','osd','-','dsk','-',parameters('Role'),'00'))]",
+            "dataDiskName": "[tolower(concat('gav',parameters('shortLocation'),'-',parameters('Application_Acronym'),'-','dr','-','dat','-','dsk','-',parameters('Role'),'00'))]"
+        },
+        "TemplateURLs": {
+            "nsgTemplate": "[concat(parameters('baseUri'),'emsManager/master/emsmanagerNSG.json')]",
+            "StorageAccountTemplate": "[concat(parameters('baseUri'),'/sharedTemplates/master/StorageAccount.json')]",
+            "emsManagerVMTemplate": "[concat(parameters('baseUri'),'/emsManager/master/emsManagerVM.json')]",
+            "domainJoinTemplate": "[concat(parameters('baseUri'),'/sharedTemplates/master/domainJoin.json')]",
+            "omsAgentTemplate": "[concat(parameters('baseUri'),'/ems-manager/nestedTemplates/omsAgent.json')]"
+        }
     },
     "resources": [
         {
+            "condition": "[equals(parameters('new_ResourceGroup'), 'Yes')]",
             "type": "Microsoft.Resources/resourceGroups",
             "apiVersion": "2018-05-01",
             "location": "[parameters('ResourceGroupLocation')]",
-            "name": "[variables('ResourceGroupName')]",
+            "name": "[variables('resourcenames').ResourceGroupName]",
             "properties": {}
         },
         {
             "type": "Microsoft.Resources/deployments",
-            "resourcegroup": "[variables('ResourceGroupName')]",
+            "resourcegroup": "[variables('resourcenames').ResourceGroupName]",
             "name": "nsg",
             "apiVersion": "2018-05-01",
             "dependsOn": [
-                "[resourceId('Microsoft.Resources/resourceGroups/', variables('ResourceGroupName'))]"
+                "[resourceId('Microsoft.Resources/resourceGroups/', variables('resourcenames').ResourceGroupName)]"
             ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[variables('nsgTemplateURL')]",
+                    "uri": "[variables('TemplateURLs').nsgTemplate]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -206,23 +190,23 @@
                         "value": "[parameters('nsgCount')]"
                     },
                     "networkSecurityGroupName": {
-                        "value": "[variables('networkSecurityGroupName')]"
+                        "value": "[variables('resourcenames').networkSecurityGroupName]"
                     }
                 }
             }
         },
         {
             "type": "Microsoft.Resources/deployments",
-            "resourcegroup": "[variables('ResourceGroupName')]",
+            "resourcegroup": "[variables('resourcenames').networkSecurityGroupName]",
             "name": "StorageAccount",
             "apiVersion": "2018-05-01",
             "dependsOn": [
-                "[resourceId('Microsoft.Resources/resourceGroups/', variables('ResourceGroupName'))]"
+                "[resourceId('Microsoft.Resources/resourceGroups/', variables('resourcenames').networkSecurityGroupName)]"
             ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[variables('StorageAccountTemplate')]",
+                    "uri": "[variables('TemplateURLs').StorageAccountTemplate]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -233,7 +217,7 @@
                         "value": "[parameters('storageCount')]"
                     },
                     "StorageAccountName": {
-                        "value": "[variables('StorageAccountName')]"
+                        "value": "[variables('resourcenames').StorageAccountName]"
                     },
                     "StorageAccountType": {
                         "value": "[variables('StorageAccountType')]"
@@ -243,8 +227,8 @@
         },
         {
             "type": "Microsoft.Resources/deployments",
-            "resourcegroup": "[variables('ResourceGroupName')]",
-            "name": "virtualMachine",
+            "resourcegroup": "[variables('resourcenames').ResourceGroupName]",
+            "name": "emsManagerVM",
             "apiVersion": "2018-05-01",
             "dependsOn": [
                 "StorageAccount"
@@ -252,7 +236,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[variables('virtualMachineTemplate')]",
+                    "uri": "[variables('templateurls').emsManagerVMTemplate]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -269,13 +253,13 @@
                         "value": "[parameters('privateIpAddress')]"
                     },
                     "virtualmachineName": {
-                        "value": "[variables('virtualmachineName')]"
+                        "value": "[variables('resourcenames').virtualmachineName]"
                     },
                     "AvailabilitySet": {
                         "value": "[parameters('AvailabilitySet')]"
                     },
                     "availabilitySetName": {
-                        "value": "[variables('availabilitySetName')]"
+                        "value": "[variables('resourcenames').availabilitySetName]"
                     },
                     "virtualMachineSize": {
                         "value": "[parameters('virtualMachineSize')]"
@@ -284,13 +268,13 @@
                         "value": "[variables('StorageAccountType')]"
                     },
                     "networkInterfaceName": {
-                        "value": "[variables('networkInterfaceName')]"
+                        "value": "[variables('resourcenames').networkInterfaceName]"
                     },
                     "osDiskName": {
-                        "value": "[variables('osDiskName')]"
+                        "value": "[variables('resourcenames').osDiskName]"
                     },
                     "dataDiskName": {
-                        "value": "[variables('dataDiskName')]"
+                        "value": "[variables('resourcenames').dataDiskName]"
                     },
                     "numberOfDataDisks": {
                         "value": "[parameters('numberOfDataDisks')]"
@@ -302,7 +286,12 @@
                         "value": "[parameters('adminUsername')]"
                     },
                     "adminPassword": {
-                        "value": "[parameters('adminPassword')]"
+                        "reference": {
+                            "keyVault": {
+                                "id": "[resourceId(subscription().subscriptionId,  parameters('keyVaultResourceGroupName'), 'Microsoft.KeyVault/vaults', parameters('keyvaultName'))]"
+                            },
+                            "secretName": "[parameters('secret_DomainPassword')]"
+                        }
                     },
                     "omsWorkspaceResourceGroup": {
                         "value": "[parameters('omsWorkspaceResourceGroup')]"
@@ -317,14 +306,14 @@
             "type": "Microsoft.Resources/deployments",
             "name": "domainJoin",
             "apiVersion": "2018-05-01",
-            "resourcegroup": "[variables('ResourceGroupName')]",
+            "resourcegroup": "[variables('resourcenames').ResourceGroupName]",
             "dependsOn": [
                 "virtualMachine"
             ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[variables('domainJoinTemplate')]",
+                    "uri": "[variables('templateurls').domainJoinTemplate]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -335,7 +324,7 @@
                         "value": "[parameters('vmCount')]"
                     },
                     "virtualmachineName": {
-                        "value": "[variables('virtualmachineName')]"
+                        "value": "[variables('resourcenames').virtualmachineName]"
                     },
                     "domainName": {
                         "value": "[parameters('domainName')]"
@@ -344,47 +333,15 @@
                         "value": "[parameters('DomainUserName')]"
                     },
                     "DomainPassword": {
-                        "value": "[parameters('DomainPassword')]"
-                    }
-                }
-            }
-        },
-        {
-            "type": "Microsoft.Resources/deployments",
-            "name": "omsAgent",
-            "apiVersion": "2018-05-01",
-            "resourcegroup": "[variables('ResourceGroupName')]",
-            "dependsOn": [
-                "virtualMachine",
-                "domainJoin"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[variables('omsAgentTemplate')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "vmCount": {
-                        "value": "[parameters('vmCount')]"
-                    },
-                    "virtualmachineName": {
-                        "value": "[variables('virtualmachineName')]"
-                    },
-                    "omsWorkspaceResourceGroup": {
-                        "value": "[parameters('omsWorkspaceResourceGroup')]"
-                    },
-                    "omsWorkspaceName": {
-                        "value": "[parameters('omsWorkspaceName')]"
+                        "reference": {
+                            "keyVault": {
+                                "id": "[resourceId(subscription().subscriptionId,  parameters('keyVaultResourceGroupName'), 'Microsoft.KeyVault/vaults', parameters('keyvaultName'))]"
+                            },
+                            "secretName": "[parameters('secret_DomainPassword')]"
+                        }
                     }
                 }
             }
         }
-    ],
-    "outputs": {
-        "ResourceGroupName": {
-            "type": "string",
-            "value": "[variables('ResourceGroupName')]"
-        }
-    }
+    ]
 }
