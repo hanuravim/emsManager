@@ -60,9 +60,6 @@
         "omsWorkspaceName": {
             "type": "string"
         },
-        "StorageAccountResourceGroup": {
-            "type": "string"
-        },
         "StorageAccountName": {
             "type": "string"
         },
@@ -216,7 +213,7 @@
                             ]
                         },
                         "protectedSettings": {
-                            "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File AzFileShare.ps1',' -AzureFileShareName ', parameters('AzureFileShareName'), ' -SAName ', parameters('StorageAccountName'),'  -SAKey ', listKeys(resourceId(parameters('StorageAccountResourceGroup'),'Microsoft.Storage/storageAccounts', parameters('StorageAccountName')), '2015-06-15').key1)]"
+                            "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File AzFileShare.ps1',' -AzureFileShareName ', parameters('AzureFileShareName'), ' -SAName ', parameters('StorageAccountName'),'  -SAKey ', listKeys(resourceId(resourceGroup().name,'Microsoft.Storage/storageAccounts', parameters('StorageAccountName')), '2015-06-15').key1)]"
                         }
                     }
                 }
