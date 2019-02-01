@@ -59,6 +59,15 @@
         },
         "omsWorkspaceName": {
             "type": "string"
+        },
+        "StorageAccountResourceGroup": {
+            "type": "string"
+        },
+        "StorageAccountName": {
+            "type": "string"
+        },
+        "AzureFileShareName": {
+            "type": "string"
         }
     },
     "variables": {
@@ -185,6 +194,29 @@
                         },
                         "protectedSettings": {
                             "workspaceKey": "[listKeys(resourceId(parameters('omsWorkspaceResourceGroup'),'Microsoft.OperationalInsights/workspaces/', parameters('omsWorkspaceName')), '2015-03-20').primarySharedKey]"
+                        }
+                    }
+                },
+                {
+                    "name": "extensions",
+                    "type": "AzureFileShare",
+                    "location": "[resourcegroup().location]",
+                    "apiVersion": "2015-06-15",
+                    "dependsOn": [
+                        "[concat('Microsoft.Compute/virtualMachines/', parameters('virtualmachineName'),copyindex(1))]"
+                    ],
+                    "properties": {
+                        "publisher": "Microsoft.Compute",
+                        "type": "CustomScriptExtension",
+                        "typeHandlerVersion": "1.9",
+                        "autoUpgradeMinorVersion": true,
+                        "settings": {
+                            "fileUris": [
+                                "https://raw.githubusercontent.com/hanuravim/demo-ems/master/ems-manager/nestedTemplates/AzFileShare.ps1"
+                            ]
+                        },
+                        "protectedSettings": {
+                            "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File AzFileShare.ps1',' -AzureFileShareName ', parameters('AzureFileShareName'), ' -SAName ', parameters('StorageAccountName'),'  -SAKey ', listKeys(resourceId(parameters('StorageAccountResourceGroup'),'Microsoft.Storage/storageAccounts', parameters('StorageAccountName')), '2015-06-15').key1)]"
                         }
                     }
                 }
