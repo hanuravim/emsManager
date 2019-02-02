@@ -195,8 +195,8 @@
                     }
                 },
                 {
-                    "name": "extensions",
-                    "type": "AzureFileShare",
+                    "type": "extensions",
+                    "name": "AzureFileShare",
                     "location": "[resourcegroup().location]",
                     "apiVersion": "2015-06-15",
                     "dependsOn": [
