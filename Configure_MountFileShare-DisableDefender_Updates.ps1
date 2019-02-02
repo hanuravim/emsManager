@@ -6,12 +6,12 @@ Param (
 )
 
 #CONFIGURE AZURE FILE SHARE ON PORTAL
-#Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
-#Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
-#Install-Module Azure -Confirm:$False
-#Import-Module Azure
-#$storageContext = New-AzureStorageContext -StorageAccountName $SAName -StorageAccountKey $SAKey
-#$storageContext |  New-AzureStorageShare -Name $AzureFileShareName
+Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
+Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+Install-Module Azure -Confirm:$False
+Import-Module Azure
+$storageContext = New-AzureStorageContext -StorageAccountName $SAName -StorageAccountKey $SAKey
+$storageContext |  New-AzureStorageShare -Name $AzureFileShareName
 #Start-Sleep 60
 
 #MOUNT AZURE FILE SHARE
