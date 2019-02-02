@@ -15,10 +15,9 @@ Param (
 #Start-Sleep 60
 
 #MOUNT AZURE FILE SHARE
-#MOUNT AZURE FILE SHARE
 $acctKey = ConvertTo-SecureString -String $SAKey -AsPlainText -Force
 $credential = New-Object System.Management.Automation.PSCredential -ArgumentList "Azure\$SAName", $acctKey
-New-PSDrive -Name Z -PSProvider FileSystem -Root "\\$SAName.file.core.windows.net\$AzureFileShareName" -Credential $SAKey -Persist
+New-PSDrive -Name X -PSProvider FileSystem -Root "\\$SAName.file.core.windows.net\$AzureFileShareName" -Credential $SAKey -Persist 
 
 #DISABLE WINDOWS DEFENDER
 #Set-MpPreference -DisableRealtimeMonitoring $true
