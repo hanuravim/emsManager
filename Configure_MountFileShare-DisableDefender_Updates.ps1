@@ -12,7 +12,7 @@ Install-Module Azure -Confirm:$False
 Import-Module Azure
 $storageContext = New-AzureStorageContext -StorageAccountName $SAName -StorageAccountKey $SAKey
 $storageContext |  New-AzureStorageShare -Name $AzureFileShareName
-Start-Sleep 60
+Start-Sleep 180
 
 #MOUNT AZURE FILE SHARE
 $acctKey = ConvertTo-SecureString -String $SAKey -AsPlainText -Force
