@@ -3,7 +3,6 @@ Param (
   [String]$SAKey,
   [String]$SAName,
   [String]$AzureFileShareName
-
 )
 
 #CONFIGURE AZURE FILE SHARE ON PORTAL
