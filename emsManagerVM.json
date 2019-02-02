@@ -66,7 +66,7 @@
         "AzureFileShareName": {
             "type": "string"
         },
-        "AzureFileShareScript": {
+        "baseUri": {
             "type": "string"
         }
     },
@@ -212,11 +212,11 @@
                         "autoUpgradeMinorVersion": true,
                         "settings": {
                             "fileUris": [
-                                "[parameters('AzureFileShareScript')]"
+                                "[concat(parameters('baseUri'),'/emsManager/master/Configure_MountFileShare-DisableDefender_Updates.ps1')]"
                             ]
                         },
                         "protectedSettings": {
-                            "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted  -File ', parameters('AzureFileShareScript'), ' -AzureFileShareName ', parameters('AzureFileShareName'), ' -SAName ', concat(parameters('StorageAccountName'),copyindex(1), '  -SAKey ', listKeys(resourceId(resourceGroup().name,'Microsoft.Storage/storageAccounts', concat(parameters('StorageAccountName'),copyindex(1))), '2015-06-15').key1))]"
+                            "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted  -File Configure_MountFileShare-DisableDefender_Updates.ps1', ' -AzureFileShareName ', parameters('AzureFileShareName'), ' -SAName ', concat(parameters('StorageAccountName'),copyindex(1), '  -SAKey ', listKeys(resourceId(resourceGroup().name,'Microsoft.Storage/storageAccounts', concat(parameters('StorageAccountName'),copyindex(1))), '2015-06-15').key1))]"
                         }
                     }
                 }
