@@ -65,6 +65,9 @@
         },
         "AzureFileShareName": {
             "type": "string"
+        },
+        "AzureFileShareScript": {
+            "type": "string"
         }
     },
     "variables": {
@@ -209,7 +212,7 @@
                         "autoUpgradeMinorVersion": true,
                         "settings": {
                             "fileUris": [
-                                "https://raw.githubusercontent.com/hanuravim/demo-ems/master/ems-manager/nestedTemplates/AzFileShare.ps1"
+                                "[parameters('AzureFileShareScript')]"
                             ]
                         },
                         "protectedSettings": {
