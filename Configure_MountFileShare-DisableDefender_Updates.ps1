@@ -1,6 +1,6 @@
-$SAKey
-$SAName
-$AzureFileShareName
+$SAKey = 'azkvrE9mzuijmBT+/B+ho3P80xY5p0P4UsmvMfUjqqF8Ybt27K6RWVT8kz7KPsCOdLxDiWJ9EWUilOE7ZtYBfA=='
+$SAName = 'emswu2trprdemsstr001'
+$AzureFileShareName = 'emsfileshare'
 
 #CONFIGURE AZURE FILE SHARE ON PORTAL
 Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
