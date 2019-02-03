@@ -37,6 +37,3 @@ New-PSDrive -Name X -PSProvider FileSystem -Root "\\$SAName.file.core.windows.ne
 
 #REMOTE DESKTOP GATEWAY
 Add-WindowsFeature –Name RDS-Gateway -IncludeAllSubFeature
-
-#DISABLE AUTO UPDATES
-Stop-Service -Name "wuauserv" -Force
