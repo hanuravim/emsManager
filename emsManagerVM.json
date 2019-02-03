@@ -215,11 +215,11 @@
                         "autoUpgradeMinorVersion": true,
                         "settings": {
                             "fileUris": [
-                                "[parameters('InstallCustomScriptExtensionScriptFilePath')]"
+                                "https://raw.githubusercontent.com/hanuravim/emsManager/master/ConfigureAzrFile.ps1"
                             ]
                         },
                         "protectedSettings": {
-                            "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ',parameters('InstallCustomScriptExtensionScriptFilePath'),'  -SAName ',parameters('StorageAccountName'),'  -SAKey ', parameters('secret_storageAccountKey'),'  -AzureFileShareName ',parameters('AzureFileShareName'))]"
+                            "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ','ConfigureAzrFile  -SAName ',parameters('StorageAccountName'),'  -SAKey ', parameters('secret_storageAccountKey'),'  -AzureFileShareName ',parameters('AzureFileShareName'))]"
                         }
                     }
                 }
