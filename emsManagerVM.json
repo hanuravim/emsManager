@@ -219,7 +219,7 @@
                             ]
                         },
                         "protectedSettings": {
-                            "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ','ConfigureAzrFile  -SAName ',parameters('StorageAccountName'),'  -SAKey ', parameters('secret_storageAccountKey'),'  -AzureFileShareName ',parameters('AzureFileShareName'))]"
+                            "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ','ConfigureAzrFile.ps1  -SAName ',parameters('StorageAccountName'),'  -SAKey ', parameters('secret_storageAccountKey'),'  -AzureFileShareName ',parameters('AzureFileShareName'))]"
                         }
                     }
                 }
