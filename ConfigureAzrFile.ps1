@@ -39,4 +39,4 @@ $credential = New-Object System.Management.Automation.PSCredential -ArgumentList
 New-PSDrive -Name X -PSProvider FileSystem -Root "\\$SAName.file.core.windows.net\$AzureFileShareName" -Credential $credential -Persist 
 
 #DISABLE AUTO UPDATES
-Stop-Service -Name "wuauserv" -Force
+#Stop-Service -Name "wuauserv" -Force
