@@ -30,6 +30,9 @@ Import-Module Azure
 $storageContext = New-AzureStorageContext -StorageAccountName $SAName -StorageAccountKey $SAKey
 $storageContext |  New-AzureStorageShare -Name $AzureFileShareName
 
+#REMOTE DESKTOP GATEWAY
+Add-WindowsFeature –Name RDS-Gateway -IncludeAllSubFeature -Restart
+
 #MOUNT AZURE FILE SHARE
 $acctKey = ConvertTo-SecureString -String $SAKey -AsPlainText -Force
 $credential = New-Object System.Management.Automation.PSCredential -ArgumentList "Azure\$SAName", $acctKey
