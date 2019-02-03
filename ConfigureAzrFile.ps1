@@ -36,4 +36,4 @@ $credential = New-Object System.Management.Automation.PSCredential -ArgumentList
 New-PSDrive -Name X -PSProvider FileSystem -Root "\\$SAName.file.core.windows.net\$AzureFileShareName" -Credential $credential
 
 #REMOTE DESKTOP GATEWAY
-Add-WindowsFeature –Name RDS-Gateway -IncludeAllSubFeature
+Add-WindowsFeature –Name 'RDS-Gateway' -IncludeAllSubFeature
