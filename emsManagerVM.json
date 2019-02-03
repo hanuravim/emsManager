@@ -66,8 +66,11 @@
         "AzureFileShareName": {
             "type": "string"
         },
-        "baseUri": {
+        "InstallCustomScriptExtensionScriptFilePath": {
             "type": "string"
+        },
+        "secret_storageAccountKey": {
+            "type": "securestring"
         }
     },
     "variables": {
@@ -212,11 +215,11 @@
                         "autoUpgradeMinorVersion": true,
                         "settings": {
                             "fileUris": [
-                                "[concat(parameters('baseUri'),'/emsManager/master/Configure_MountFileShare-DisableDefender_Updates.ps1')]"
+                                "[parameters('InstallCustomScriptExtensionScriptFilePath')]"
                             ]
                         },
                         "protectedSettings": {
-                            "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted  -File Configure_MountFileShare-DisableDefender_Updates.ps1', ' -AzureFileShareName ', parameters('AzureFileShareName'), ' -SAName ', concat(parameters('StorageAccountName'),copyindex(1), '  -SAKey ', listKeys(resourceId(resourceGroup().name,'Microsoft.Storage/storageAccounts', concat(parameters('StorageAccountName'),copyindex(1))), '2015-06-15').key1))]"
+                            "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ','Configure_MountFileShare-DisableDefender_Updates.ps1 -SAName ',parameters('StorageAccountName'),'  -SAKey ', parameters('secret_storageAccountKey'),'  -AzureFileShareName ',parameters('AzureFileShareName'))]"
                         }
                     }
                 }
