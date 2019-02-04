@@ -68,9 +68,6 @@
         },
         "InstallCustomScriptExtensionScriptFilePath": {
             "type": "string"
-        },
-        "secret_storageAccountKey": {
-            "type": "securestring"
         }
     },
     "variables": {
@@ -219,7 +216,7 @@
                             ]
                         },
                         "protectedSettings": {
-                            "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ','ConfigureAzrFile.ps1  -SAName ',parameters('StorageAccountName'),'  -SAKey ', parameters('secret_storageAccountKey'),'  -AzureFileShareName ',parameters('AzureFileShareName'))]"
+                            "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ','ConfigureAzrFile.ps1  -SAName ',parameters('StorageAccountName'),'  -SAKey ', listKeys(resourceId(resourceGroup().name,'Microsoft.Storage/storageAccounts',parameters('StorageAccountName')),'2015-06-15').key1,'  -AzureFileShareName ',parameters('AzureFileShareName'))]"
                         }
                     }
                 }
