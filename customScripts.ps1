@@ -25,3 +25,13 @@ $count = 0
     }
 $ADI = Get-CimInstance -Class Win32_Volume -Filter "driveletter='F:'"
 Set-CimInstance -InputObject $ADI -Arguments @{Label="ADI"}
+
+#DISABLE AUTO UPDATES
+Stop-Service -Name "wuauserv" -Force
+
+#REMOTE DESKTOP GATEWAY
+Install-WindowsFeature -Name 'RDS-Gateway' -IncludeAllSubFeature
+
+#ENABLE UAC
+Set-ItemProperty -Path HKLM:\Software\Microsoft\Windows\CurrentVersion\policies\system -Name EnableLUA -Value 1
+shutdown /r
