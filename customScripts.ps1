@@ -25,11 +25,3 @@ $count = 0
     }
 $ADI = Get-CimInstance -Class Win32_Volume -Filter "driveletter='F:'"
 Set-CimInstance -InputObject $ADI -Arguments @{Label="ADI"}
-
-#CONFIGURE AZURE FILE SHARE ON PORTAL
-Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
-Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
-Install-Module Azure -Confirm:$False
-Import-Module Azure
-$storageContext = New-AzureStorageContext -StorageAccountName $SAName -StorageAccountKey $SAKey
-$storageContext |  New-AzureStorageShare -Name $AzureFileShareName
