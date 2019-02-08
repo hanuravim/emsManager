@@ -4,6 +4,10 @@ Param (
   [String]$SAName,
   [String]$AzureFileShareName
 )
+#DISABLE UAC
+Set-ItemProperty -Path HKLM:\Software\Microsoft\Windows\CurrentVersion\policies\system -Name EnableLUA -Value 0
+shutdown /r
+
 #DISABLE WINDOWS DEFENDER
 Set-MpPreference -DisableRealtimeMonitoring $true
 
@@ -40,3 +44,8 @@ $storageContext |  New-AzureStorageShare -Name $AzureFileShareName
 $acctKey = ConvertTo-SecureString -String $SAKey -AsPlainText -Force
 $credential = New-Object System.Management.Automation.PSCredential -ArgumentList "Azure\$SAName", $acctKey
 New-PSDrive -Name X -PSProvider FileSystem -Root "\\$SAName.file.core.windows.net\$AzureFileShareName" -Credential $credential
+
+#ENABLE UAC
+Set-ItemProperty -Path HKLM:\Software\Microsoft\Windows\CurrentVersion\policies\system -Name EnableLUA -Value 1
+shutdown /r
+
