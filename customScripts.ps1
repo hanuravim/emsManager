@@ -26,12 +26,24 @@ $count = 0
 $ADI = Get-CimInstance -Class Win32_Volume -Filter "driveletter='F:'"
 Set-CimInstance -InputObject $ADI -Arguments @{Label="ADI"}
 
-
 #DISABLE AUTO UPDATES
 sc.exe stop wuauserv
 
 #REMOTE DESKTOP GATEWAY
 Install-WindowsFeature -Name 'RDS-Gateway' -IncludeAllSubFeature
+
+#CONFIGURE AZURE FILE SHARE ON PORTAL
+Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force
+Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+Install-Module Azure -Confirm:$False
+Import-Module Azure
+$storageContext = New-AzureStorageContext -StorageAccountName $SAName -StorageAccountKey $SAKey
+$storageContext |  New-AzureStorageShare -Name $AzureFileShareName
+
+#MOUNT AZURE FILE SHARE
+$acctKey = ConvertTo-SecureString -String $SAKey -AsPlainText -Force
+$credential = New-Object System.Management.Automation.PSCredential -ArgumentList "Azure\$SAName", $acctKey
+New-PSDrive -Name X -PSProvider FileSystem -Root "\\$SAName.file.core.windows.net\$AzureFileShareName" -Credential $credential
 
 #ENABLE UAC
 Set-ItemProperty -Path HKLM:\Software\Microsoft\Windows\CurrentVersion\policies\system -Name EnableLUA -Value 1
