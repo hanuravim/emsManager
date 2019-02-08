@@ -38,6 +38,3 @@ $storageContext |  New-AzureStorageShare -Name $AzureFileShareName
 $acctKey = ConvertTo-SecureString -String $SAKey -AsPlainText -Force
 $credential = New-Object System.Management.Automation.PSCredential -ArgumentList "Azure\$SAName", $acctKey
 New-PSDrive -Name X -PSProvider FileSystem -Root "\\$SAName.file.core.windows.net\$AzureFileShareName" -Credential $credential
-
-#DISABLE AUTO UPDATES
-Stop-Service -Name "wuauserv" -Force
