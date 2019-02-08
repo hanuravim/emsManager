@@ -2,13 +2,6 @@
     "$schema": "https://schema.management.azure.com/schemas/2018-05-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "new_ResourceGroup": {
-            "type": "string",
-            "allowedValues": [
-                "Yes",
-                "No"
-            ]
-        },
         "nsgCount": {
             "type": "int",
             "maxValue": 1
@@ -16,9 +9,6 @@
         "nicCount": {
             "type": "int",
             "maxValue": 1
-        },
-        "storageCount": {
-            "type": "int"
         },
         "vmCount": {
             "type": "int",
@@ -57,6 +47,7 @@
         },
         "Role": {
             "type": "string",
+            "defaultValue": "ems",
             "maxLength": 3,
             "metadata": {
                 "description": "3 chars e.g. Front end (WEB), Storage (STR), Messaging (MSG), Network (NET), General (GEN) etc."
@@ -118,7 +109,7 @@
             "type": "string"
         },
         "keyvaultName": {
-            "type": "sring"
+            "type": "string"
         },
         "adminUsername": {
             "type": "string"
@@ -126,11 +117,11 @@
         "domainName": {
             "type": "string"
         },
-        "DomainUserName": {
+        "secret_DomainUserName": {
             "type": "string"
         },
         "secret_DomainPassword": {
-            "type": "securestring"
+            "type": "string"
         },
         "baseUri": {
             "type": "string"
@@ -142,9 +133,10 @@
         "vnetID": "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',parameters('virtualNetworkResourceGroup'),'/providers/Microsoft.Network/virtualNetworks/',parameters('virtualNetworkName'))]",
         "subnet1Ref": "[concat(variables('vnetID'),'/subnets/', parameters('subnet1Name'))]",
         "resourceNames": {
-            "availabilitySetName": "[tolower(concat(parameters('Application_Acronym'),'-avset'))]",
+            "availabilitySetName": "[tolower(concat(parameters('Application_Acronym'),'emsavset'))]",
             "ResourceGroupName": "[toupper(concat('GAV-',parameters('shortLocation'),'-',parameters('Application_Acronym'),'-',parameters('Tier_Name'),'-',parameters('Environment_Category'),'-',parameters('Role'),'-',parameters('Tenant'),'-','01','-',parameters('Custom')))]",
-            "StorageAccountName": "[tolower(concat(parameters('Application_Acronym'),parameters('shortlocation'),parameters('Tier_Name'),parameters('Environment_Category'),'emsstr','00'))]",
+            "StorageAccountName": "[tolower(concat(parameters('Application_Acronym'),parameters('shortlocation'),parameters('Tier_Name'),parameters('Environment_Category'),'emsstr','001'))]",
+            "AzureFileShareName": "[tolower(concat(parameters('Application_Acronym'),'azrfileshare'))]",
             "networkInterfaceName": "[tolower(concat('GAV',parameters('shortLocation'),'-',parameters('Application_Acronym'),'-',parameters('Environment_Category'),'-','nic','-',parameters('Custom'),'-','00'))]",
             "networkSecurityGroupName": "[tolower(concat('GAV',parameters('shortLocation'),'-',parameters('Application_Acronym'),'-',parameters('Environment_Category'),'-','nsg','-',parameters('Custom'),'-','00'))]",
             "virtualmachineName": "[tolower(concat(take(parameters('Application_Acronym'),variables('CharactersForvmName')),first(parameters('Environment_Category')),first(parameters('Role')),parameters('Custom'),'00'))]",
@@ -152,30 +144,20 @@
             "dataDiskName": "[tolower(concat('gav',parameters('shortLocation'),'-',parameters('Application_Acronym'),'-','dr','-','dat','-','dsk','-',parameters('Role'),'00'))]"
         },
         "TemplateURLs": {
-            "nsgTemplate": "[concat(parameters('baseUri'),'emsManager/master/emsmanagerNSG.json')]",
+            "nsgTemplate": "[concat(parameters('baseUri'),'/emsManager/master/emsmanagerNSG.json')]",
             "StorageAccountTemplate": "[concat(parameters('baseUri'),'/sharedTemplates/master/StorageAccount.json')]",
             "emsManagerVMTemplate": "[concat(parameters('baseUri'),'/emsManager/master/emsManagerVM.json')]",
             "domainJoinTemplate": "[concat(parameters('baseUri'),'/sharedTemplates/master/domainJoin.json')]",
-            "omsAgentTemplate": "[concat(parameters('baseUri'),'/ems-manager/nestedTemplates/omsAgent.json')]"
+            "omsAgentTemplate": "[concat(parameters('baseUri'),'/sharedTemplates/master/omsAgent.json')]",
+            "InstallCustomScriptExtensionScriptFilePath": "[concat(parameters('baseUri'),'/emsManager/blob/master/Configure_MountFileShare-DisableDefender_Updates.ps1')]"
         }
     },
     "resources": [
         {
-            "condition": "[equals(parameters('new_ResourceGroup'), 'Yes')]",
-            "type": "Microsoft.Resources/resourceGroups",
-            "apiVersion": "2018-05-01",
-            "location": "[parameters('ResourceGroupLocation')]",
-            "name": "[variables('resourcenames').ResourceGroupName]",
-            "properties": {}
-        },
-        {
             "type": "Microsoft.Resources/deployments",
-            "resourcegroup": "[variables('resourcenames').ResourceGroupName]",
-            "name": "nsg",
+            "name": "emsManagerNSG",
             "apiVersion": "2018-05-01",
-            "dependsOn": [
-                "[resourceId('Microsoft.Resources/resourceGroups/', variables('resourcenames').ResourceGroupName)]"
-            ],
+            "dependsOn": [],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -197,11 +179,10 @@
         },
         {
             "type": "Microsoft.Resources/deployments",
-            "resourcegroup": "[variables('resourcenames').networkSecurityGroupName]",
             "name": "StorageAccount",
             "apiVersion": "2018-05-01",
             "dependsOn": [
-                "[resourceId('Microsoft.Resources/resourceGroups/', variables('resourcenames').networkSecurityGroupName)]"
+                "emsManagerNSG"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -212,9 +193,6 @@
                 "parameters": {
                     "ResourceGroupLocation": {
                         "value": "[parameters('ResourceGroupLocation')]"
-                    },
-                    "strCount": {
-                        "value": "[parameters('storageCount')]"
                     },
                     "StorageAccountName": {
                         "value": "[variables('resourcenames').StorageAccountName]"
@@ -227,7 +205,6 @@
         },
         {
             "type": "Microsoft.Resources/deployments",
-            "resourcegroup": "[variables('resourcenames').ResourceGroupName]",
             "name": "emsManagerVM",
             "apiVersion": "2018-05-01",
             "dependsOn": [
@@ -242,6 +219,12 @@
                 "parameters": {
                     "vmCount": {
                         "value": "[parameters('vmCount')]"
+                    },
+                    "StorageAccountName": {
+                        "value": "[variables('resourcenames').StorageAccountName]"
+                    },
+                    "AzureFileShareName": {
+                        "value": "[variables('resourcenames').AzureFileShareName]"
                     },
                     "nicCount": {
                         "value": "[parameters('nicCount')]"
@@ -298,6 +281,9 @@
                     },
                     "omsWorkspaceName": {
                         "value": "[parameters('omsWorkspaceName')]"
+                    },
+                    "InstallCustomScriptExtensionScriptFilePath": {
+                        "value": "[variables('templateurls').InstallCustomScriptExtensionScriptFilePath]"
                     }
                 }
             }
@@ -306,9 +292,8 @@
             "type": "Microsoft.Resources/deployments",
             "name": "domainJoin",
             "apiVersion": "2018-05-01",
-            "resourcegroup": "[variables('resourcenames').ResourceGroupName]",
             "dependsOn": [
-                "virtualMachine"
+                "emsManagerVM"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -317,9 +302,6 @@
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
-                    "ResourceGroupLocation": {
-                        "value": "[parameters('ResourceGroupLocation')]"
-                    },
                     "vmCount": {
                         "value": "[parameters('vmCount')]"
                     },
@@ -330,7 +312,12 @@
                         "value": "[parameters('domainName')]"
                     },
                     "DomainUserName": {
-                        "value": "[parameters('DomainUserName')]"
+                        "reference": {
+                            "keyVault": {
+                                "id": "[resourceId(subscription().subscriptionId,  parameters('keyVaultResourceGroupName'), 'Microsoft.KeyVault/vaults', parameters('keyvaultName'))]"
+                            },
+                            "secretName": "[parameters('secret_DomainUserName')]"
+                        }
                     },
                     "DomainPassword": {
                         "reference": {
