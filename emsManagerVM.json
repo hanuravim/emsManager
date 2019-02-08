@@ -66,7 +66,10 @@
         "AzureFileShareName": {
             "type": "string"
         },
-        "InstallCustomScriptExtensionScriptFilePath": {
+        "CustomScriptExtensionScriptFilePath": {
+            "type": "string"
+        },
+        "CustomScriptFileName": {
             "type": "string"
         }
     },
@@ -212,11 +215,11 @@
                         "autoUpgradeMinorVersion": true,
                         "settings": {
                             "fileUris": [
-                                "https://raw.githubusercontent.com/hanuravim/emsManager/master/ConfigureAzrFile.ps1"
+                                "[parameters('CustomScriptExtensionScriptFilePath')]"
                             ]
                         },
                         "protectedSettings": {
-                            "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ','ConfigureAzrFile.ps1  -SAName ',parameters('StorageAccountName'),'  -SAKey ', listKeys(resourceId(resourceGroup().name,'Microsoft.Storage/storageAccounts',parameters('StorageAccountName')),'2015-06-15').key1,'  -AzureFileShareName ',parameters('AzureFileShareName'))]"
+                            "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File  ',parameters('CustomScriptFileName'),'  -SAName ',parameters('StorageAccountName'),'  -SAKey ', listKeys(resourceId(resourceGroup().name,'Microsoft.Storage/storageAccounts',parameters('StorageAccountName')),'2015-06-15').key1,'  -AzureFileShareName ',parameters('AzureFileShareName'))]"
                         }
                     }
                 }
