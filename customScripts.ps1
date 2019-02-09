@@ -4,12 +4,6 @@ Param (
   [String]$SAName,
   [String]$AzureFileShareName
 )
-$path = $env:APPDATA + '\persistvar.txt'
-$SAKey,$SAName,$AzureFileShareName | Out-File -FilePath $path
-$vars = Get-Content -Path $path
-$SAKey = $vars[0];$SAName = $vars[1];$AzureFileShareName = $vars[2]
-
-
 #DISABLE WINDOWS DEFENDER
 Set-MpPreference -DisableRealtimeMonitoring $true
 
@@ -47,5 +41,3 @@ $storageContext |  New-AzureStorageShare -Name $AzureFileShareName
 $acctKey = ConvertTo-SecureString -String $SAKey -AsPlainText -Force
 $credential = New-Object System.Management.Automation.PSCredential -ArgumentList "Azure\$SAName", $acctKey
 New-PSDrive -Name X -PSProvider FileSystem -Root "\\$SAName.file.core.windows.net\$AzureFileShareName" -Credential $credential
-
-
