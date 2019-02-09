@@ -1,3 +1,6 @@
+#DISABLE UAC
+Set-ItemProperty -Path HKLM:\Software\Microsoft\Windows\CurrentVersion\policies\system -Name EnableLUA -Value 0
+shutdown /r
 function Connect-AzureFileShare
 {
     [CmdletBinding()]
@@ -57,3 +60,6 @@ Import-Module Azure
     Return net use $DriveLetter $CombinedPath $UserName $StorageAccountKey
 }
 Connect-AzureFileShare
+#ENABLE UAC
+Set-ItemProperty -Path HKLM:\Software\Microsoft\Windows\CurrentVersion\policies\system -Name EnableLUA -Value 1
+shutdown /r
