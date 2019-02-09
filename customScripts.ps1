@@ -1,8 +1,8 @@
 Param (
   [Parameter()]
-  [String]$SAKey = 'IXX990bdk/6NaZMtFAMMJyrjCFSVmcwIWkQmqli90yAAXfLCnCWBgsQMeOJe+Fm+pCt25i7yLs6m/ej4fXD7mg==',
-  [String]$SAName = 'emscutrdevemsstr001',
-  [String]$AzureFileShareName = 'emsazrfileshare'
+  [String]$SAKey
+  [String]$SAName,
+  [String]$AzureFileShareName
 )
 $path = $env:APPDATA + '\persistvar.txt'
 $SAKey,$SAName,$AzureFileShareName | Out-File -FilePath $path
@@ -10,8 +10,9 @@ $vars = Get-Content -Path $path
 $SAKey = $vars[0];$SAName = $vars[1];$AzureFileShareName = $vars[2]
 
 #DISABLE UAC
-$UAC = Get-ItemProperty -Path HKLM:\Software\Microsoft\Windows\CurrentVersion\policies\system -Name EnableLUA # -Value 0
-if($UAC.EnableLUA -eq '1'){ Set-ItemProperty -Path HKLM:\Software\Microsoft\Windows\CurrentVersion\policies\system -Name EnableLUA -Value 0;Restart-Computer -Wait}
+$UAC = Get-ItemProperty -Path HKLM:\Software\Microsoft\Windows\CurrentVersion\policies\system -Name EnableLUA
+if($UAC.EnableLUA -eq '1'){ Set-ItemProperty -Path HKLM:\Software\Microsoft\Windows\CurrentVersion\policies\system -Name EnableLUA -Value 0;shutdown /r}
+Start-Sleep 60
 
 #DISABLE WINDOWS DEFENDER
 Set-MpPreference -DisableRealtimeMonitoring $true
