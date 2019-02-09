@@ -11,8 +11,7 @@ $SAKey = $vars[0];$SAName = $vars[1];$AzureFileShareName = $vars[2]
 
 #DISABLE UAC
 $UAC = Get-ItemProperty -Path HKLM:\Software\Microsoft\Windows\CurrentVersion\policies\system -Name EnableLUA
-if($UAC.EnableLUA -eq '1'){ Set-ItemProperty -Path HKLM:\Software\Microsoft\Windows\CurrentVersion\policies\system -Name EnableLUA -Value 0;shutdown /r}
-Start-Sleep 60
+if($UAC.EnableLUA -eq '1'){ Set-ItemProperty -Path HKLM:\Software\Microsoft\Windows\CurrentVersion\policies\system -Name EnableLUA -Value 0;shutdown /r;Start-Sleep 60}
 
 #DISABLE WINDOWS DEFENDER
 Set-MpPreference -DisableRealtimeMonitoring $true
