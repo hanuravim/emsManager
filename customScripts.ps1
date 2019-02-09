@@ -9,9 +9,6 @@ $SAKey,$SAName,$AzureFileShareName | Out-File -FilePath $path
 $vars = Get-Content -Path $path
 $SAKey = $vars[0];$SAName = $vars[1];$AzureFileShareName = $vars[2]
 
-#DISABLE UAC
-$UAC = Get-ItemProperty -Path HKLM:\Software\Microsoft\Windows\CurrentVersion\policies\system -Name EnableLUA
-if($UAC.EnableLUA -eq '1'){ Set-ItemProperty -Path HKLM:\Software\Microsoft\Windows\CurrentVersion\policies\system -Name EnableLUA -Value 0;shutdown /r;Start-Sleep 60}
 
 #DISABLE WINDOWS DEFENDER
 Set-MpPreference -DisableRealtimeMonitoring $true
@@ -38,6 +35,3 @@ $count = 0
 $ADI = Get-CimInstance -Class Win32_Volume -Filter "driveletter='F:'"
 Set-CimInstance -InputObject $ADI -Arguments @{Label="ADI"}
 
-#ENABLE UAC
-Set-ItemProperty -Path HKLM:\Software\Microsoft\Windows\CurrentVersion\policies\system -Name EnableLUA -Value 1
-shutdown /r
