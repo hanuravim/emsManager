@@ -42,4 +42,4 @@ $UNCPath = "\\" +($StorageAccount.PrimaryEndpoints.File).SubString(8).TrimEnd('/
 $Share = (Get-AzureStorageShare -Context $StorageContext)
 $CombinedPath = (Join-Path $UNCPath -ChildPath $AzureFileShareName)
 $UserName = "/u:" +$StorageAccount.StorageAccountName
-Return net use $DriveLetter $CombinedPath $UserName $StorageAccountKey
+net use Z: $CombinedPath $UserName $SAKey
