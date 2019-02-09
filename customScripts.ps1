@@ -1,6 +1,6 @@
 Param (
   [Parameter()]
-  [String]$SAKey
+  [String]$SAKey,
   [String]$SAName,
   [String]$AzureFileShareName
 )
